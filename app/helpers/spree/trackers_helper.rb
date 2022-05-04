@@ -5,16 +5,16 @@ module Spree
         'spree-segment-product',
         I18n.locale,
         current_currency,
-        product.cache_key_with_version
+        product.cache_key
       ].compact.join('/')
 
       product_hash = Rails.cache.fetch(cache_key) do
         {
           product_id: product.id,
           sku: product.sku,
-          category: product.category&.name,
+          category: product.category,
           name: product.name,
-          brand: product.brand&.name,
+          brand: product.brand,
           price: product.price_in(current_currency).amount&.to_f,
           currency: current_currency,
           url: spree.product_url(product)
@@ -33,8 +33,8 @@ module Spree
         'spree-ga-line-item',
         I18n.locale,
         current_currency,
-        line_item.cache_key_with_version,
-        variant.cache_key_with_version
+        line_item.cache_key,
+        variant.cache_key
       ].compact.join('/')
 
       Rails.cache.fetch(cache_key) do
@@ -42,9 +42,9 @@ module Spree
         {
           id: variant.sku,
           name: variant.name,
-          category: product.category&.name,
+          category: product.category,
           variant: variant.options_text,
-          brand: product.brand&.name,
+          brand: product.brand,
           quantity: line_item.quantity,
           price: variant.price_in(current_currency).amount&.to_f
         }.to_json.html_safe
